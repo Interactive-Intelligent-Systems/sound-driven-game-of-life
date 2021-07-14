@@ -1,0 +1,88 @@
+/* Custom color theme properties */
+:root {
+  --f7-theme-color: #304763;
+  --f7-theme-color-rgb: 48, 71, 99;
+  --f7-theme-color-shade: #233348;
+  --f7-theme-color-tint: #3d5b7e;
+}
+
+/*** Custom styles ***/
+
+/* Header, Intro */
+.title-large, .intro-div {
+  text-align: center;
+}
+
+.intro-text {
+  max-width: 500px;
+  display: inline-block;
+  padding-bottom: 25px;
+}
+
+/* Game of Life */
+#game-of-life-grid {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.agent {
+  color: transparent;
+  min-height: 25px;
+}
+
+.inactive-agent {
+  background-color: #fff;
+}
+
+/* Controls */
+div.controls {
+  padding-top: 50px;
+  width: 100%;
+}
+
+.get-started {
+  max-width: 200px;
+  display: block;
+  float: left;
+  margin-left: 40%;
+}
+
+.restart-button {
+  max-width: 200px;
+  display: block;
+  float: right;
+  margin-right: 40%;
+}
+
+#editor { 
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.restart-button {
+  z-index: 999;
+}
+
+.minor-toast {
+  width: 200px;
+  height: 150px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.toast-top-right {
+  margin-right: 150px;
+}
+
+.active-agent.minor {
+  background-color: #EABAB9;
+}
+
+
+.active-agent.major {
+  background-color: #2A4765;
+}
+
