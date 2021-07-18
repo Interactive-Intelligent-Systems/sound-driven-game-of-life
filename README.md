@@ -75,7 +75,7 @@ following drums are supported:
 
 In case there are issues with the configuration of the drum module, or if another drum module should
 be connected, the application can be re-configured in the file
-[./src/js/audioInferface.js](./src/js/audioInferface.js).
+[./src/js/audioInferface.js](./src/js/audioInterface.js).
 
 ## License
 [BSD 2-Clause License](./LICENSE)
