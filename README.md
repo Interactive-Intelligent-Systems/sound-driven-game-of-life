@@ -26,7 +26,7 @@ npm run start
 Build the project to deploy it somewhere:
 
 ```
-build-prod
+  build-prod
 ```
 
 ## Usage Instructions
@@ -59,12 +59,23 @@ machine. The following keys are assigned to a sound:
   beat will facilitate growth of your agent population:
     * x: bass drum
     * z: snare drum
-    * c: floor tom,
+    * c: floor tom
     * n: hi-hat (open)
     * m: hi-hat (closed)
 
 ### Electronic Drums Interaction Mode
-TO BE IMPLEMENTED
+The application is configured in way that allows it to also read in the signal of a Roland
+TD-17/TD-17-L drum sound module. Analogously to the computer keyboard-based 'fake' e-drums, the
+following drums are supported:
+
+* Bass drum
+* Hi-hat (closed & open)
+* Snare
+* Floor tom
+
+In case there are issues with the configuration of the drum module, or if another drum module should
+be connected, the application can be re-configured in the file
+[./src/js/audioInferface.js](./src/js/audioInferface.js).
 
 ## License
 [BSD 2-Clause License](./LICENSE)

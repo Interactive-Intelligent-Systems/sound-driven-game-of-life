@@ -70,6 +70,28 @@ const getDrumStringForKey = key => {
   return mapping[key]
 }
 
+const getDrumForMidiId = id => {
+  const mapping = {
+    36: bd, 
+    38: snare,
+    43: ft,
+    26: hhatOpen,
+    22: hhatClosed
+  }
+  return mapping[id]
+}
+
+const getDrumStringForMidiId = id => {
+  const mapping = {
+    36: 'bd',
+    38: 'snare',
+    43: 'ft',
+    26: 'hhatOpen',
+    22: 'hhatClosed'
+  }
+  return mapping[id]
+}
+
 window.stability = 0.8
 
 window.beatHistory = []
@@ -151,7 +173,45 @@ const audioInterface = () => {
        })
       return
     }
+    processSound(event)
+  })
+
+  window.addEventListener('keyup', event => {
     const note = getNoteForKey(event.key)
+    if (note) {
+      if (notes.includes(note)) {
+        notes = []
+      }
+      if (oscillatorDictionary[note]) {
+        oscillatorDictionary[note].stop()
+      }
+    }
+  })
+}
+
+navigator.requestMIDIAccess()
+  .then(function(access) {
+     const inputs = access.inputs.values()
+     const input = inputs.next().value
+     if(input.name === 'TD-17') {
+       console.log('here TD')
+      input.onmidimessage = message => {
+        const drumId = message && message.data && message.data[1]
+        console.log(drumId)
+        if(drumId && getDrumForMidiId(drumId)) {
+          //getDrumForMidiId(drumId).start()
+          beatHistory.push({
+            drum: getDrumStringForMidiId(drumId),
+            time: new Date().getTime()
+          })
+          return
+        }
+      }
+     }
+  })
+
+function processSound(event) {
+  const note = getNoteForKey(event.key)
     if (note) {
       notes.push(note)
       const frequency = getNoteFrequency(note)
@@ -201,19 +261,5 @@ const audioInterface = () => {
       }
       oscillatorDictionary[note] = playTone(frequency, masterGainNode, audioContext)
     }
-  })
-
-  window.addEventListener('keyup', event => {
-    const note = getNoteForKey(event.key)
-    if (note) {
-      if (notes.includes(note)) {
-        notes = []
-      }
-      if (oscillatorDictionary[note]) {
-        oscillatorDictionary[note].stop()
-      }
-    }
-  })
 }
-
 export default audioInterface
