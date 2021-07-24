@@ -46,7 +46,11 @@ const bd = new Tone.Player('/www/static/Bass-Drum-1.wav').toDestination()
 const snare = new Tone.Player('/www/static/Ensoniq-ESQ-1-Snare.wav').toDestination()
 const hhatClosed = new Tone.Player('/www/static/Closed-Hi-Hat-1.wav').toDestination()
 const hhatOpen = new Tone.Player('/www/static/Ensoniq-SQ-1-Open-Hi-Hat.wav').toDestination()
-const ft = new Tone.Player('/www/static/Floor-Tom-1.wav').toDestination()
+const ride = new Tone.Player('/www/static/Ensoniq-SQ-1-Ride-Cymbal.wav').toDestination()
+const crash = new Tone.Player('/www/static/Crash-Cymbal-1.wav').toDestination()
+const ft = new Tone.Player('/www/static/Floor-Tom.wav').toDestination()
+const ttLow = new Tone.Player('/www/static/Tom-Tom-Low.wav').toDestination()
+const ttHigh = new Tone.Player('/www/static/Tom-Tom-High.wav').toDestination()
 
 const getDrumForKey = key => {
   const mapping = {
@@ -54,7 +58,11 @@ const getDrumForKey = key => {
     z: snare,
     c: ft,
     n: hhatOpen,
-    m: hhatClosed
+    m: hhatClosed,
+    v: ttLow,
+    b: ttHigh,
+    k: ride,
+    l: crash
   }
   return mapping[key]
 }
@@ -65,7 +73,11 @@ const getDrumStringForKey = key => {
     z: 'snare',
     c: 'ft',
     n: 'hhatOpen',
-    m: 'hhatClosed'
+    m: 'hhatClosed',
+    v: 'ttLow',
+    b: 'ttHigh',
+    k: 'ride',
+    l: 'crash'
   }
   return mapping[key]
 }
@@ -76,7 +88,11 @@ const getDrumForMidiId = id => {
     38: snare,
     43: ft,
     26: hhatOpen,
-    22: hhatClosed
+    22: hhatClosed,
+    28: ttHigh,
+    45: ttLow,
+    59: ride,
+    55: crash
   }
   return mapping[id]
 }
@@ -87,7 +103,11 @@ const getDrumStringForMidiId = id => {
     38: 'snare',
     43: 'ft',
     26: 'hhatOpen',
-    22: 'hhatClosed'
+    22: 'hhatClosed',
+    28: 'ttHigh',
+    45: 'ttLow',
+    59: 'ride',
+    55: 'crash'
   }
   return mapping[id]
 }
@@ -193,7 +213,7 @@ navigator.requestMIDIAccess()
   .then(function(access) {
      const inputs = access.inputs.values()
      const input = inputs.next().value
-     if(input.name === 'TD-17') {
+     if(input && input.name === 'TD-17') {
        console.log('here TD')
       input.onmidimessage = message => {
         const drumId = message && message.data && message.data[1]

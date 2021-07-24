@@ -60,8 +60,13 @@ machine. The following keys are assigned to a sound:
     * x: bass drum
     * z: snare drum
     * c: floor tom
+    * b: high tom tom
+    * v: low tom tom
     * n: hi-hat (open)
     * m: hi-hat (closed)
+    * l: crash
+    * k: ride (bell)
+
 
 ### Electronic Drums Interaction Mode
 The application is configured in way that allows it to also read in the signal of a Roland
@@ -71,6 +76,10 @@ following drums are supported:
 * Bass drum
 * Hi-hat (closed & open)
 * Snare
+* Ride
+* Crash
+* High tom tom
+* Low tom tom
 * Floor tom
 
 In case there are issues with the configuration of the drum module, or if another drum module should
