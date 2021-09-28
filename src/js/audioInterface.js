@@ -4,6 +4,7 @@
 import { detect } from '@tonaljs/chord-detect'
 import * as Tone from 'tone'
 import toastr from 'toastr'
+import { CURRENT_HISTORY_WINDOW_SIZE, PREVIOUS_HISTORY_WINDOW_START, PREVIOUS_HISTORY_WINDOW_END, HISTORY_LENGTH, MULTIPLIER } from './consts'
 
 const getNoteFrequency = node => {
   const mapping = {
@@ -38,7 +39,7 @@ const getNoteForKey = key => {
     'j': 'G',
     'i': 'G#'
   }
-  return mapping[key]
+  return mapping[key] 
 }
 
 // load drums
@@ -51,9 +52,10 @@ const crash = new Tone.Player('/www/static/Crash-Cymbal-1.wav').toDestination()
 const ft = new Tone.Player('/www/static/Floor-Tom.wav').toDestination()
 const ttLow = new Tone.Player('/www/static/Tom-Tom-Low.wav').toDestination()
 const ttHigh = new Tone.Player('/www/static/Tom-Tom-High.wav').toDestination()
+const rideCrash = 'rideCrash' // e-drums only  
 
 const getDrumForKey = key => {
-  const mapping = {
+  const mapping = { 
     x: bd,
     z: snare,
     c: ft,
@@ -91,7 +93,8 @@ const getDrumForMidiId = id => {
     22: hhatClosed,
     28: ttHigh,
     45: ttLow,
-    59: ride,
+    51: ride,
+    59: rideCrash,
     55: crash
   }
   return mapping[id]
@@ -106,7 +109,8 @@ const getDrumStringForMidiId = id => {
     22: 'hhatClosed',
     28: 'ttHigh',
     45: 'ttLow',
-    59: 'ride',
+    51: 'ride',
+    59: 'rideCrash',
     55: 'crash'
   }
   return mapping[id]
@@ -118,32 +122,45 @@ window.beatHistory = []
 
 window.stabilityWindow = []
 
+let isRunning = false
+
 setInterval(() => {
+  
   const newBeatHistory = []
   const currentHistoryAggregate = {
     bd: 0,
     snare: 0,
     ft: 0,
     hhatOpen: 0,
-    hhatClosed: 0
+    hhatClosed: 0,
+    ride: 0,
+    rideCrash: 0,
+    crash: 0,
+    ttHigh: 0,
+    ttLow: 0
   }
   const previousHistoryAggregate = {
     bd: 0,
     snare: 0,
     ft: 0,
     hhatOpen: 0,
-    hhatClosed: 0
+    hhatClosed: 0,
+    ride: 0,
+    rideCrash: 0,
+    crash: 0,
+    ttHigh: 0,
+    ttLow: 0
   }
   const now = new Date().getTime()
   beatHistory.forEach(beat => {
     if(now - beat.time < 10000) newBeatHistory.push(beat)
-    if(now - beat.time < 3000) {
+    if(now - beat.time < CURRENT_HISTORY_WINDOW_SIZE) {
       currentHistoryAggregate[beat.drum] += 1
     }
-    if(now - beat.time < 4000 && now - beat.time > 1500) {
+    if(now - beat.time < PREVIOUS_HISTORY_WINDOW_START && now - beat.time > PREVIOUS_HISTORY_WINDOW_END) {
       previousHistoryAggregate[beat.drum] += 1
     } 
-  })  
+  })
   console.log('Current', currentHistoryAggregate)
   console.log('Previous', previousHistoryAggregate)
   //window.beatHistory = newBeatHistory
@@ -157,11 +174,14 @@ setInterval(() => {
   })
   console.log(currentNumberOfBeats, sharedNumberOfBeats)
   const tempStability = currentNumberOfBeats === 0 ? 0.8 : sharedNumberOfBeats / currentNumberOfBeats
+  if(tempStability < 0.79 || tempStability > 0.81) isRunning = true
   stabilityWindow.push(tempStability)
-  if(stabilityWindow.length < 3) {
+  if(isRunning && currentNumberOfBeats === 0) {
+    stability = 0
+  } else if(stabilityWindow.length < HISTORY_LENGTH || !isRunning) {
     stability = 0.8
   } else {
-    stability = stabilityWindow.slice(-3).reduce((a, b) => a + b, 0 ) / 3
+    stability = (stabilityWindow.slice(-3).reduce((a, b) => a + b, 0 ) / HISTORY_LENGTH) * MULTIPLIER
   }
   console.log('Stability:', stability)
 }, 2000)

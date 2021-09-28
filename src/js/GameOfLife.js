@@ -2,6 +2,8 @@
 import $$ from 'dom7'
 // import js-son and assign Belief, Plan, Agent, and Environment to separate consts
 import { Belief, Plan, Agent, Environment } from 'js-son-agent'
+// import agent coloring function
+import getColorForPercentage from './colorManagement'
 
 window.activeAgentMode = 'minor'
 /*
@@ -104,17 +106,19 @@ const stateFilter = state => ({ activityArray: state.previousActivity })
 // render environment's ``currentState`` as grid to DOM
 const render = state => {
   if (state.nextActivity.length === 0) {
+    console.log(getColorForPercentage(stability))
     const agentActivity = state.previousActivity
     const grid = agentActivity.map((value, index) => {
       const agentClass = value ? `agent active-agent ${window.activeAgentMode}` : 'agent inactive-agent'
+      const backgroundColor = value ? getColorForPercentage(stability) : 'rgb(255,255,255)'
       if (index === 0) {
-        return `<div class="row no-gap"><div class="col-5 ${agentClass}">_</div>`
+        return `<div class="row no-gap"><div class="col-5 ${agentClass}" style="background-color:${backgroundColor}!important;">_</div>`
       } else if (index % 15 === 0) {
-        return `</div><div class="row no-gap"><div class="col-5 ${agentClass}">_</div>`
+        return `</div><div class="row no-gap"><div class="col-5 ${agentClass}" style="background-color:${backgroundColor}!important;">_</div>`
       } else if (index === 224) {
-        return `<div class="col-5 ${agentClass}">_</div></div>`
+        return `<div class="col-5 ${agentClass}" style="background-color:${backgroundColor}!important;">_</div></div>`
       } else {
-        return `<div class="col-5 ${agentClass}">_</div>`
+        return `<div class="col-5 ${agentClass}" style="background-color:${backgroundColor}!important;">_</div>`
       }
     }).join('')
     $$('#game-of-life-grid').html(grid)
